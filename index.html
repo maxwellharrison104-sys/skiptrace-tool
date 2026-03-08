@@ -106,7 +106,7 @@ let zip = r.Zip
 
 if(!address || !zip) return
 
-let link = `https://www.truepeoplesearch.com/results?streetaddress=${address.replace(/ /g,'+')}&zipcode=${zip}`
+let link = "https://www.truepeoplesearch.com/resultaddress?streetaddress="${address.replace(/ /g,'+')}&zipcode=${zip}`
 
 let row = `
 <tr>
