@@ -1,0 +1,132 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Skip Trace Link Generator</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<style>
+body{
+font-family: Arial, sans-serif;
+background:#f4f6f8;
+padding:40px;
+}
+
+.container{
+background:white;
+padding:25px;
+border-radius:10px;
+max-width:900px;
+margin:auto;
+box-shadow:0 5px 15px rgba(0,0,0,0.1);
+}
+
+h2{
+margin-bottom:20px;
+}
+
+button{
+padding:8px 14px;
+border:none;
+background:#2563eb;
+color:white;
+border-radius:6px;
+cursor:pointer;
+}
+
+button:hover{
+background:#1d4ed8;
+}
+
+table{
+width:100%;
+border-collapse:collapse;
+margin-top:20px;
+}
+
+th,td{
+border:1px solid #ddd;
+padding:8px;
+text-align:left;
+}
+
+th{
+background:#f1f5f9;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h2>Skip Trace Link Generator</h2>
+
+<p>Upload your Excel file with columns <b>Address</b> and <b>Zip</b>.</p>
+
+<input type="file" id="upload">
+
+<table id="table">
+<thead>
+<tr>
+<th>Address</th>
+<th>Zip</th>
+<th>Search</th>
+</tr>
+</thead>
+<tbody></tbody>
+</table>
+
+</div>
+
+<script>
+
+document.getElementById('upload').addEventListener('change',handleFile,false)
+
+function handleFile(e){
+
+const reader = new FileReader()
+
+reader.onload = function(e){
+
+const data = new Uint8Array(e.target.result)
+const workbook = XLSX.read(data,{type:'array'})
+
+const sheet = workbook.Sheets[workbook.SheetNames[0]]
+const rows = XLSX.utils.sheet_to_json(sheet)
+
+const table = document.querySelector("#table tbody")
+table.innerHTML=""
+
+rows.forEach(r=>{
+
+let address = r.Address
+let zip = r.Zip
+
+if(!address || !zip) return
+
+let link = `https://www.truepeoplesearch.com/results?streetaddress=${address.replace(/ /g,'+')}&zipcode=${zip}`
+
+let row = `
+<tr>
+<td>${address}</td>
+<td>${zip}</td>
+<td><a href="${link}" target="_blank"><button>Search</button></a></td>
+</tr>
+`
+
+table.innerHTML += row
+
+})
+
+}
+
+reader.readAsArrayBuffer(e.target.files[0])
+
+}
+
+</script>
+
+</body>
+</html>
